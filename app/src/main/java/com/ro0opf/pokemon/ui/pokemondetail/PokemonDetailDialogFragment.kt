@@ -1,5 +1,6 @@
 package com.ro0opf.pokemon.ui.pokemondetail
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.ro0opf.pokemon.R
 import com.ro0opf.pokemon.data.pokemon.Pokemon
 import com.ro0opf.pokemon.databinding.DialogPokemonDetailBinding
+import com.ro0opf.pokemon.ui.maps.MapsActivity
 
 class PokemonDetailDialogFragment(private val pokemon: Pokemon) : DialogFragment() {
     private lateinit var binding: DialogPokemonDetailBinding
@@ -44,10 +46,12 @@ class PokemonDetailDialogFragment(private val pokemon: Pokemon) : DialogFragment
         }
 
         binding.btnLocation.setOnClickListener {
-            if (pokemon.locations.isEmpty()) {
+            if (pokemon.locations.isNullOrEmpty()) {
                 Toast.makeText(requireContext(), "서식지가 알려져있지 않습니다.", Toast.LENGTH_SHORT).show()
             } else {
-
+                val intent = Intent(requireContext(), MapsActivity::class.java)
+                intent.putExtra("pokemon", pokemon)
+                startActivity(intent)
             }
         }
     }
@@ -81,7 +85,6 @@ class PokemonDetailDialogFragment(private val pokemon: Pokemon) : DialogFragment
         pokemonDetailViewModel.pokemonLocation.observe(this, {
             pokemon.locations = it
             pokemon.isCachedLocation = true
-            binding.btnDone.visibility = View.VISIBLE
         })
     }
 

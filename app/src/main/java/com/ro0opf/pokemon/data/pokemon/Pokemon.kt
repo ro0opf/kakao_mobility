@@ -1,7 +1,6 @@
 package com.ro0opf.pokemon.data.pokemon
 
 import android.os.Parcelable
-import androidx.lifecycle.LiveData
 import com.ro0opf.pokemon.data.location.Location
 import kotlinx.android.parcel.Parcelize
 
@@ -15,7 +14,7 @@ data class Pokemon(
     var sprites: String?,
     var isCachedDetail: Boolean = false,
     var isCachedLocation: Boolean = false,
-    var locations: List<Location>,
+    var locations: List<Location>?,
 ) : Parcelable {
 
 }
