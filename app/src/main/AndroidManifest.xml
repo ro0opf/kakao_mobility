@@ -18,7 +18,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.search.SearchActivity"/>
+        <activity android:name=".ui.search.SearchActivity"
+            android:windowSoftInputMode="adjustNothing"/>
     </application>
 
 </manifest>

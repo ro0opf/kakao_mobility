@@ -1,16 +1,15 @@
 package com.ro0opf.pokemon.data
 
-class Repository{
-//    private val testClient = RetrofitService.createService(TestAPI::class.java)
-//    private val userClient = RetrofitService.createService(UserAPI::class.java)
-//    private val votingClient = RetrofitService.createService(VoteAPI::class.java)
-//
-//    suspend fun getTest(userId : Int) = testClient.getTest(userId)
-//
-//    suspend fun getUser(body : JsonObject) = userClient.getUser(body)
-//    suspend fun getBalance(userId : String) = userClient.getBalance(userId)
-//
-//    suspend fun getVoting(stDt : String, endDt : String) = votingClient.getVoting(stDt, endDt)
-//    suspend fun getCompanyList(eventId : String) = votingClient.getCompanyList(eventId)
-//    suspend fun vote(company:String, id:String, eventId: String, voteAmt:Double) = votingClient.vote(company, id, eventId, voteAmt)
+import com.ro0opf.pokemon.common.RetrofitService
+import com.ro0opf.pokemon.data.pokemon.PokemonAPI
+import com.ro0opf.pokemon.data.pokemon.PokemonOfficialAPI
+
+object Repository{
+    private val pokemonClient = RetrofitService.createService(PokemonAPI::class.java)
+    private val pokemonOfficialClient = RetrofitService.createPokemonOfficialService(PokemonOfficialAPI::class.java)
+
+    suspend fun fetchPokemonList() = pokemonClient.fetchPokemonList()
+    suspend fun fetchPokemonLocationList() = pokemonClient.fetchPokemonLocationList()
+
+    suspend fun fetchPokemonDetail(id : Int) = pokemonOfficialClient.fetchPokemonDetail(id)
 }
