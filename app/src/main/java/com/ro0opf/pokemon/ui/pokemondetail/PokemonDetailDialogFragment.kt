@@ -65,8 +65,8 @@ class PokemonDetailDialogFragment(private val pokemon: Pokemon) : DialogFragment
             pokemon.weight = it.get("weight").asInt
 
             it.getAsJsonObject("sprites").run {
-                if (!this.get("front_female").isJsonNull) {
-                    pokemon.front_default = get("front_female").asString
+                if (!this.get("front_default").isJsonNull) {
+                    pokemon.front_default = get("front_default").asString
                 }
             }
             it.getAsJsonObject("sprites").run {
