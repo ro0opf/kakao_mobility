@@ -43,8 +43,8 @@ class PokemonAdapter(private val pokemonList: MutableList<Pokemon>) :
                 } else {
                     val filteredList = ArrayList<Pokemon>()
                     for (pokemon in pokemonList) {
-                        if (pokemon.names[0].contains(charString.toLowerCase(Locale.ROOT))
-                            || pokemon.names[1].contains(charString.toLowerCase(Locale.ROOT))
+                        if (pokemon.names[0].toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT))
+                            || pokemon.names[1].toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT))
                         ) {
                             filteredList.add(pokemon)
                         }
