@@ -9,9 +9,18 @@ object RetrofitService {
         return retrofit.create(serviceClass)
     }
 
+    fun <T> createPokemonOfficialService(serviceClass: Class<T>): T {
+        return retrofitPokemonOfficial.create(serviceClass)
+    }
     private val retrofit =
         Retrofit.Builder()
-            .baseUrl("http://116.123.86.186:9999/")
+            .baseUrl("https://demo0928971.mockable.io/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+    private val retrofitPokemonOfficial =
+        Retrofit.Builder()
+            .baseUrl(" https://pokeapi.co/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 }

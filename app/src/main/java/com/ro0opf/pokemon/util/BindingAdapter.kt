@@ -17,10 +17,14 @@ fun <T> setImageCircleSrc(view: ImageView, imageSrc: T){
 
 @BindingAdapter("setImageCenterSrc")
 fun <T> setImageCenterSrc(view: ImageView, imageSrc: T){
+    if(imageSrc == null){
+        return
+    }
+
     GlideApp
         .with(view.context)
         .load(imageSrc)
-        .error(R.drawable.ic_error)
+        .thumbnail(0.25f)
         .fitCenter()
         .into(view)
 }

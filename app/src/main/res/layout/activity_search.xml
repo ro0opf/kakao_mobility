@@ -15,8 +15,13 @@
         <EditText
             android:id="@+id/edt_search"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter Pokemon name"
+            android:layout_height="0dp"
+            android:background="@color/main_color"
+            android:hint="@string/search_hint"
+            android:textColorHint="@color/sub_color"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            app:layout_constraintHeight_percent="0.1"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
