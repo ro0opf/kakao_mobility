@@ -7,11 +7,11 @@ import kotlinx.android.parcel.Parcelize
 data class Location(
     val lat: Double,
     val lng: Double,
-    val id: Int
+    val id: Int,
 ) : Parcelable {
 
 }
 
 data class LocationResult (
-    val pokemons: List<Location>
+    val pokemons: List<Location>,
 )

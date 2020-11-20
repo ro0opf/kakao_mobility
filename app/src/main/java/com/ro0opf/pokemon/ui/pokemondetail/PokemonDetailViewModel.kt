@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.JsonObject
 import com.ro0opf.pokemon.data.Repository
 import com.ro0opf.pokemon.data.pokemon.Pokemon
 import kotlinx.coroutines.launch
@@ -13,30 +12,28 @@ import kotlinx.coroutines.launch
 class PokemonDetailViewModel : ViewModel() {
 
     private val _isFetchPokemonDetail = MutableLiveData<Boolean>()
-    val isFetchPokemonDetail : LiveData<Boolean> = _isFetchPokemonDetail
+    val isFetchPokemonDetail: LiveData<Boolean> = _isFetchPokemonDetail
 
-    fun fetchPokemonDetail(pokemon : Pokemon) {
+    fun fetchPokemonDetail(pokemon: Pokemon) {
         viewModelScope.launch {
             try {
                 val response = Repository.fetchPokemonDetail(pokemon.id)
-                val pokemonData : JsonObject = response.body()!!
-                pokemon.height = pokemonData.get("height").asInt
-                pokemon.weight = pokemonData.get("weight").asInt
+                val pokemonDetail = response.body()!!
 
-                pokemonData.getAsJsonObject("sprites").run {
-                    if (!this.get("front_default").isJsonNull) {
-                        pokemon.front_default = get("front_default").asString
-                    }
-                }
-                pokemonData.getAsJsonObject("sprites").run {
-                    this.keySet().forEach { key ->
-                        if (!this.get(key).isJsonNull) {
-                            pokemon.sprites = this[key].asString
-                            return@run
+                pokemon.height = pokemonDetail.height
+                pokemon.weight = pokemonDetail.weight
+                pokemon.sprites = pokemonDetail.sprites
+
+                if (pokemon.sprites["front_default"] != null) {
+                    pokemon.imgSrc = pokemon.sprites["front_default"].toString()
+                } else {
+                    pokemon.sprites.forEach {
+                        if (it.value != null) {
+                            pokemon.imgSrc = it.value.toString()
+                            return@forEach
                         }
                     }
                 }
-
                 pokemon.isCachedDetail = true
                 _isFetchPokemonDetail.value = true
             } catch (e: Exception) {
@@ -50,14 +47,17 @@ class PokemonDetailViewModel : ViewModel() {
             try {
                 val response = Repository.fetchPokemonLocationList()
                 val locations = response.body()!!.pokemons
-                val idLocations = locations.filter{ it.id == pokemon.id }
+                val idLocations = locations.filter { it.id == pokemon.id }
 
-                if(idLocations.isNotEmpty()) {
+                if (idLocations.isNotEmpty()) {
                     pokemon.locations = idLocations
                     pokemon.isCachedLocation = true
                 }
             } catch (e: Exception) {
-                Log.e("PokemonDetailViewModel", "fetchPokemonLocationList >> $e.stackTraceToString()")
+                Log.e(
+                    "PokemonDetailViewModel",
+                    "fetchPokemonLocationList >> $e.stackTraceToString()"
+                )
             }
         }
     }

@@ -31,7 +31,7 @@
 
         <ImageView
             android:id="@+id/iv_img"
-            setImageCenterSrc="@{pokemon.front_default != null ? pokemon.front_default : pokemon.sprites}"
+            setImageCenterSrc="@{pokemon.imgSrc}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
