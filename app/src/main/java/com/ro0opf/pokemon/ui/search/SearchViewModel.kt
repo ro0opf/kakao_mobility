@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import com.ro0opf.pokemon.data.Repository
 import com.ro0opf.pokemon.data.pokemon.Pokemon
 import kotlinx.coroutines.launch
@@ -17,7 +16,7 @@ class SearchViewModel : ViewModel() {
         viewModelScope.launch {
             try{
                 val response = Repository.fetchPokemonList()
-                _pokemonList.value = Gson().fromJson(response.body()!!["pokemons"], Array<Pokemon>::class.java).toList()
+                _pokemonList.value = response.body()!!.pokemons
             }catch (e : Exception){
 
             }

@@ -19,3 +19,6 @@ data class Pokemon(
 
 }
 
+data class PokemonResult(
+    val pokemons : List<Pokemon>
+)

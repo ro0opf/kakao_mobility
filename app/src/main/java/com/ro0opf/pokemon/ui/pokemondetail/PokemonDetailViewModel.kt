@@ -5,10 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.ro0opf.pokemon.data.Repository
-import com.ro0opf.pokemon.data.location.Location
 import com.ro0opf.pokemon.data.pokemon.Pokemon
 import kotlinx.coroutines.launch
 
@@ -51,7 +49,7 @@ class PokemonDetailViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = Repository.fetchPokemonLocationList()
-                val locations = Gson().fromJson(response.body()!!["pokemons"], Array<Location>::class.java).toList()
+                val locations = response.body()!!.pokemons
                 val idLocations = locations.filter{ it.id == pokemon.id }
 
                 if(idLocations.isNotEmpty()) {

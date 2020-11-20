@@ -12,3 +12,6 @@ data class Location(
 
 }
 
+data class LocationResult (
+    val pokemons: List<Location>
+)
