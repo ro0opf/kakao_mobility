@@ -8,14 +8,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ro0opf.pokemon.R
-import com.ro0opf.pokemon.data.pokemon.Pokemon
 import com.ro0opf.pokemon.databinding.ActivitySearchBinding
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
     private lateinit var searchViewModel: SearchViewModel
-    private val pokemonList = ArrayList<Pokemon>()
-    private val pokemonAdapter = PokemonAdapter(pokemonList)
+    private val pokemonAdapter = PokemonAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +29,7 @@ class SearchActivity : AppCompatActivity() {
     private fun setObserve() {
         binding.lifecycleOwner = this
         searchViewModel.pokemonList.observe(this, {
-            pokemonList.addAll(it)
+            pokemonAdapter.pokemonList.addAll(it)
             pokemonAdapter.submitList(it)
         })
     }

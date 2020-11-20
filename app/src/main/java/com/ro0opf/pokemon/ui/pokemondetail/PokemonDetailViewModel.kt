@@ -9,36 +9,54 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.ro0opf.pokemon.data.Repository
 import com.ro0opf.pokemon.data.location.Location
+import com.ro0opf.pokemon.data.pokemon.Pokemon
 import kotlinx.coroutines.launch
 
 class PokemonDetailViewModel : ViewModel() {
 
-    private val _pokemonDetail = MutableLiveData<JsonObject>()
-    val pokemonDetail : LiveData<JsonObject> = _pokemonDetail
+    private val _isFetchPokemonDetail = MutableLiveData<Boolean>()
+    val isFetchPokemonDetail : LiveData<Boolean> = _isFetchPokemonDetail
 
-    private val _pokemonLocation = MutableLiveData<List<Location>>()
-    val pokemonLocation : LiveData<List<Location>> = _pokemonLocation
-
-    fun fetchPokemonDetail(id : Int) {
+    fun fetchPokemonDetail(pokemon : Pokemon) {
         viewModelScope.launch {
             try {
-                val response = Repository.fetchPokemonDetail(id)
-                _pokemonDetail.value = response.body()
+                val response = Repository.fetchPokemonDetail(pokemon.id)
+                val pokemonData : JsonObject = response.body()!!
+                pokemon.height = pokemonData.get("height").asInt
+                pokemon.weight = pokemonData.get("weight").asInt
+
+                pokemonData.getAsJsonObject("sprites").run {
+                    if (!this.get("front_default").isJsonNull) {
+                        pokemon.front_default = get("front_default").asString
+                    }
+                }
+                pokemonData.getAsJsonObject("sprites").run {
+                    this.keySet().forEach { key ->
+                        if (!this.get(key).isJsonNull) {
+                            pokemon.sprites = this[key].asString
+                            return@run
+                        }
+                    }
+                }
+
+                pokemon.isCachedDetail = true
+                _isFetchPokemonDetail.value = true
             } catch (e: Exception) {
                 Log.e("PokemonDetailViewModel", "fetchPokemonDetail >> $e.stackTraceToString()")
             }
         }
     }
 
-    fun fetchPokemonLocationList(id : Int) {
+    fun fetchPokemonLocationList(pokemon: Pokemon) {
         viewModelScope.launch {
             try {
                 val response = Repository.fetchPokemonLocationList()
                 val locations = Gson().fromJson(response.body()!!["pokemons"], Array<Location>::class.java).toList()
-                val idLocations = locations.filter{ it.id == id }
+                val idLocations = locations.filter{ it.id == pokemon.id }
 
                 if(idLocations.isNotEmpty()) {
-                    _pokemonLocation.value = idLocations
+                    pokemon.locations = idLocations
+                    pokemon.isCachedLocation = true
                 }
             } catch (e: Exception) {
                 Log.e("PokemonDetailViewModel", "fetchPokemonLocationList >> $e.stackTraceToString()")

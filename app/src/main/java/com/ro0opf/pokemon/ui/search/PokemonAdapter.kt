@@ -1,5 +1,6 @@
 package com.ro0opf.pokemon.ui.search
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
@@ -13,7 +14,7 @@ import com.ro0opf.pokemon.ui.pokemondetail.PokemonDetailDialogFragment
 import java.util.*
 import kotlin.collections.ArrayList
 
-class PokemonAdapter(private val pokemonList: MutableList<Pokemon>) :
+class PokemonAdapter() :
     ListAdapter<Pokemon, PokemonAdapter.ViewHolder>(object : DiffUtil.ItemCallback<Pokemon>() {
         override fun areItemsTheSame(oldItem: Pokemon, newItem: Pokemon):
                 Boolean = oldItem == newItem
@@ -22,6 +23,7 @@ class PokemonAdapter(private val pokemonList: MutableList<Pokemon>) :
                 Boolean = oldItem == newItem
     }), Filterable {
 
+    var pokemonList = ArrayList<Pokemon>()
     private var filterList: List<Pokemon> = pokemonList
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -69,7 +71,11 @@ class PokemonAdapter(private val pokemonList: MutableList<Pokemon>) :
         fun bindTo(pokemon: Pokemon) {
             binding.pokemon = pokemon
             binding.clPokemon.setOnClickListener {
-                val dialog = PokemonDetailDialogFragment(pokemon)
+                val dialog = PokemonDetailDialogFragment()
+                val args = Bundle()
+                args.putParcelable("pokemon", pokemon);
+                dialog.arguments = args;
+
                 dialog.show((binding.root.context as SearchActivity).supportFragmentManager, "pokemonDetailDialogFragment")
             }
         }

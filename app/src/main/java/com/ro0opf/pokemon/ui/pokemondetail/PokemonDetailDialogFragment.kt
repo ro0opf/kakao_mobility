@@ -14,9 +14,10 @@ import com.ro0opf.pokemon.data.pokemon.Pokemon
 import com.ro0opf.pokemon.databinding.DialogPokemonDetailBinding
 import com.ro0opf.pokemon.ui.maps.MapsActivity
 
-class PokemonDetailDialogFragment(private val pokemon: Pokemon) : DialogFragment() {
+class PokemonDetailDialogFragment : DialogFragment() {
     private lateinit var binding: DialogPokemonDetailBinding
     private lateinit var pokemonDetailViewModel: PokemonDetailViewModel
+    private lateinit var pokemon: Pokemon
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,13 +28,14 @@ class PokemonDetailDialogFragment(private val pokemon: Pokemon) : DialogFragment
         pokemonDetailViewModel = ViewModelProvider(this).get(PokemonDetailViewModel::class.java)
         binding =
             DataBindingUtil.inflate(inflater, R.layout.dialog_pokemon_detail, container, false)
+        pokemon = arguments?.getParcelable("pokemon")!!
 
         if (!pokemon.isCachedDetail) {
-            pokemonDetailViewModel.fetchPokemonDetail(pokemon.id)
+            pokemonDetailViewModel.fetchPokemonDetail(pokemon)
         }
 
         if (!pokemon.isCachedLocation) {
-            pokemonDetailViewModel.fetchPokemonLocationList(pokemon.id)
+            pokemonDetailViewModel.fetchPokemonLocationList(pokemon)
         }
         setObserve()
         setOnClickListener()
@@ -60,31 +62,10 @@ class PokemonDetailDialogFragment(private val pokemon: Pokemon) : DialogFragment
         binding.lifecycleOwner = this
         binding.pokemon = pokemon
 
-        pokemonDetailViewModel.pokemonDetail.observe(this, { it ->
-            pokemon.height = it.get("height").asInt
-            pokemon.weight = it.get("weight").asInt
-
-            it.getAsJsonObject("sprites").run {
-                if (!this.get("front_default").isJsonNull) {
-                    pokemon.front_default = get("front_default").asString
-                }
+        pokemonDetailViewModel.isFetchPokemonDetail.observe(this, {
+            if (it) {
+                binding.pokemon = pokemon
             }
-            it.getAsJsonObject("sprites").run {
-                this.keySet().forEach { key ->
-                    if (!this.get(key).isJsonNull) {
-                        pokemon.sprites = this[key].asString
-                        return@run
-                    }
-                }
-            }
-
-            pokemon.isCachedDetail = true
-            binding.pokemon = pokemon
-        })
-
-        pokemonDetailViewModel.pokemonLocation.observe(this, {
-            pokemon.locations = it
-            pokemon.isCachedLocation = true
         })
     }
 
