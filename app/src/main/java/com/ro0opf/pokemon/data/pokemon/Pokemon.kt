@@ -2,8 +2,8 @@ package com.ro0opf.pokemon.data.pokemon
 
 import android.os.Parcelable
 import com.ro0opf.pokemon.data.location.Location
-import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Pokemon(

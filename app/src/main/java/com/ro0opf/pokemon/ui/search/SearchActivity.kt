@@ -9,17 +9,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ro0opf.pokemon.R
 import com.ro0opf.pokemon.databinding.ActivitySearchBinding
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var searchViewModel: SearchViewModel
-    private val pokemonAdapter = PokemonAdapter()
+    private val searchViewModel: SearchViewModel by viewModel()
+    private val pokemonAdapter : PokemonAdapter by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search)
-        searchViewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
-
         searchViewModel.fetchPokemonList()
         setAddTextChangedListener()
         setRcvSearchResult(binding.rcvSearchResult)

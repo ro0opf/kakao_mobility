@@ -5,19 +5,50 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hadilq.liveevent.LiveEvent
 import com.ro0opf.pokemon.data.Repository
 import com.ro0opf.pokemon.data.pokemon.Pokemon
 import kotlinx.coroutines.launch
 
-class PokemonDetailViewModel : ViewModel() {
+class PokemonDetailViewModel(sPokemon: Pokemon, private val repository: Repository) : ViewModel() {
+    private val _pokemon = MutableLiveData(sPokemon)
+    val pokemon: LiveData<Pokemon> = _pokemon
 
-    private val _isFetchPokemonDetail = MutableLiveData<Boolean>()
-    val isFetchPokemonDetail: LiveData<Boolean> = _isFetchPokemonDetail
+    val finishEvent = LiveEvent<Unit>()
 
-    fun fetchPokemonDetail(pokemon: Pokemon) {
+    val toastEvent = LiveEvent<String>()
+    val moveToMapsEvent = LiveEvent<Pokemon>()
+
+    fun onLocationButtonClick() {
+        val pokemon = _pokemon.value
+
+        if (pokemon == null) {
+            finishEvent.value = Unit
+            return
+        }
+
+        if (pokemon.locations.isNullOrEmpty()) {
+            toastEvent.value = "서식지가 알려져있지 않습니다."
+        } else {
+            moveToMapsEvent.value = pokemon
+        }
+    }
+
+    fun fetchPokemonDetail() {
+        val pokemon = _pokemon.value
+
+        if (pokemon == null) {
+            finishEvent.value = Unit
+            return
+        }
+
+        if (pokemon.isCachedDetail) {
+            return
+        }
+
         viewModelScope.launch {
             try {
-                val response = Repository.fetchPokemonDetail(pokemon.id)
+                val response = repository.fetchPokemonDetail(pokemon.id)
                 val pokemonDetail = response.body()!!
 
                 pokemon.height = pokemonDetail.height
@@ -35,23 +66,38 @@ class PokemonDetailViewModel : ViewModel() {
                     }
                 }
                 pokemon.isCachedDetail = true
-                _isFetchPokemonDetail.value = true
+                Log.e("pokemon", "fetch detail $pokemon")
+                _pokemon.value = pokemon
+
             } catch (e: Exception) {
                 Log.e("PokemonDetailViewModel", "fetchPokemonDetail >> $e.stackTraceToString()")
             }
         }
     }
 
-    fun fetchPokemonLocationList(pokemon: Pokemon) {
+    fun fetchPokemonLocationList() {
+        val pokemon = _pokemon.value
+
+        if (pokemon == null) {
+            finishEvent.value = Unit
+            return
+        }
+
+        if (pokemon.isCachedLocation) {
+            return
+        }
+
         viewModelScope.launch {
             try {
-                val response = Repository.fetchPokemonLocationList()
+                val response = repository.fetchPokemonLocationList()
                 val locations = response.body()!!.pokemons
                 val idLocations = locations.filter { it.id == pokemon.id }
 
                 if (idLocations.isNotEmpty()) {
                     pokemon.locations = idLocations
                     pokemon.isCachedLocation = true
+                    Log.e("pokemon", "fetch location $pokemon")
+                    _pokemon.value = pokemon
                 }
             } catch (e: Exception) {
                 Log.e(
