@@ -11,9 +11,7 @@ import com.ro0opf.pokemon.data.pokemon.PokemonDetail
 import com.ro0opf.pokemon.data.pokemon.PokemonIdAndNames
 import com.ro0opf.pokemon.data.pokemon.PokemonLocationList
 import com.ro0opf.pokemon.data.pokemon.convert
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 
 class PokemonDetailViewModel(
@@ -42,87 +40,69 @@ class PokemonDetailViewModel(
 
     fun fetchPokemonInfo() {
         viewModelScope.launch {
-            val deferredPokemonDetail: Deferred<PokemonDetail?> = async {
+            val deferredPokemonDetail = async {
                 if (_pokemonDetailLiveData.value != null) {
                     return@async null
                 }
 
-                try {
-                    val response = repository.fetchPokemonDetail(pokemonIdAndNames.id)
-                    val pokemonDetail = response.body()!!
-                    val imgSrc = if (pokemonDetail.sprites.get("front_default") != null) {
-                        pokemonDetail.sprites["front_default"].toString()
-                    } else {
-                        pokemonDetail.sprites.toList().firstOrNull {
-                            it.second != null
-                        }?.second.toString()
-                    }
+                val response = repository.fetchPokemonDetail(pokemonIdAndNames.id)
+                val pokemonDetail = response ?: return@async null
 
-                    //                    _pokemonDetailLiveData.value =
-                    //                        PokemonDetail(
-                    //                            pokemonIdAndNames.id,
-                    //                            pokemonIdAndNames.names,
-                    //                            pokemonDetail.height,
-                    //                            pokemonDetail.weight,
-                    //                            pokemonDetail.sprites,
-                    //                            imgSrc
-                    //                        )
-
-                    return@async PokemonDetail(
-                        pokemonIdAndNames.id,
-                        pokemonIdAndNames.names,
-                        pokemonDetail.height,
-                        pokemonDetail.weight,
-                        pokemonDetail.sprites,
-                        imgSrc
-                    )
-                } catch (e: Exception) {
-                    Log.e("PokemonDetailViewModel", "fetchPokemonDetail >> $e.stackTraceToString()")
+                val imgSrc = if (pokemonDetail.sprites.get("front_default") != null) {
+                    pokemonDetail.sprites["front_default"].toString()
+                } else {
+                    pokemonDetail.sprites.toList().firstOrNull {
+                        it.second != null
+                    }?.second.toString()
                 }
-            } as Deferred<PokemonDetail?>
 
-            val deferredPokemonLocationList: Deferred<PokemonLocationList?> = async {
+                return@async PokemonDetail(
+                    pokemonIdAndNames.id,
+                    pokemonIdAndNames.names,
+                    pokemonDetail.height,
+                    pokemonDetail.weight,
+                    pokemonDetail.sprites,
+                    imgSrc
+                )
+            }
+
+            val deferredPokemonLocationList = async {
                 val pokemon = _pokemonLocationListLiveData.value
 
                 if (pokemon != null) {
                     return@async null
                 }
 
-                try {
-                    val response = repository.fetchPokemonLocationList()
-                    val locations = response.body()!!.pokemons
-                    val idLocations = locations.filter { it.id == pokemonIdAndNames.id }
-                        .map { it.convert() }
+                val response = repository.fetchPokemonLocationList()
+                val locations = response?.pokemons ?: return@async null
+                val idLocations = locations.filter { it.id == pokemonIdAndNames.id }
+                    .map { it.convert() }
 
-                    if (idLocations.isNotEmpty()) {
-//                        _pokemonLocationListLiveData.value =
-//                            PokemonLocationList(
-//                                pokemonIdAndNames.id,
-//                                idLocations,
-//                                pokemonIdAndNames.names
-//                            )
-
-                        return@async PokemonLocationList(
-                            pokemonIdAndNames.id,
-                            idLocations,
-                            pokemonIdAndNames.names
-                        )
-                    } else {
-                        return@async null
-                    }
-                } catch (e: Exception) {
-                    Log.e(
-                        "PokemonDetailViewModel",
-                        "fetchPokemonLocationList >> $e.stackTraceToString()"
+                if (idLocations.isNotEmpty()) {
+                    return@async PokemonLocationList(
+                        pokemonIdAndNames.id,
+                        idLocations,
+                        pokemonIdAndNames.names
                     )
+                } else {
+                    return@async null
                 }
-            } as Deferred<PokemonLocationList?>
+            }
 
-            val resPokemonDetail = deferredPokemonDetail.await()
-            val resPokemonLocationList = deferredPokemonLocationList.await()
+            try {
+                val resPokemonDetail = deferredPokemonDetail.await()
+                val resPokemonLocationList = deferredPokemonLocationList.await()
 
-            _pokemonDetailLiveData.value = resPokemonDetail
-            _pokemonLocationListLiveData.value = resPokemonLocationList
+                if (resPokemonDetail != null) {
+                    _pokemonDetailLiveData.value = resPokemonDetail
+                }
+
+                if (resPokemonLocationList != null) {
+                    _pokemonLocationListLiveData.value = resPokemonLocationList
+                }
+            } catch (e: Exception) {
+                Log.e("fetch", e.message.toString())
+            }
         }
     }
 }
