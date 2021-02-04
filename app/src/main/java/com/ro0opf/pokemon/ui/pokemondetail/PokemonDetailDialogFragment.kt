@@ -2,7 +2,6 @@ package com.ro0opf.pokemon.ui.pokemondetail
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import com.ro0opf.pokemon.R
-import com.ro0opf.pokemon.data.pokemon.Pokemon
+import com.ro0opf.pokemon.data.pokemon.PokemonIdAndNames
 import com.ro0opf.pokemon.databinding.DialogPokemonDetailBinding
 import com.ro0opf.pokemon.ui.maps.MapsActivity
 import org.koin.core.component.KoinComponent
@@ -26,21 +25,20 @@ class PokemonDetailDialogFragment : DialogFragment(), KoinComponent {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val pokemon = arguments?.getParcelable<Pokemon>("pokemon")
+        val pokemonIdAndNames = arguments?.getParcelable<PokemonIdAndNames>("pokemonIdAndNames")
 
-        if (pokemon == null) {
+        if (pokemonIdAndNames == null) {
             Toast.makeText(requireContext(), "pokemon is null", Toast.LENGTH_SHORT).show()
             dismiss()
             return null
         }
 
-        pokemonDetailViewModel = get { parametersOf(pokemon) }
+        pokemonDetailViewModel = get { parametersOf(pokemonIdAndNames) }
         dialog!!.window?.setBackgroundDrawableResource(R.drawable.round_corner)
         binding =
             DataBindingUtil.inflate(inflater, R.layout.dialog_pokemon_detail, container, false)
 
-        pokemonDetailViewModel.fetchPokemonDetail()
-        pokemonDetailViewModel.fetchPokemonLocationList()
+        pokemonDetailViewModel.fetchPokemonInfo()
 
         setObserve()
         setOnClickListener()
@@ -60,24 +58,18 @@ class PokemonDetailDialogFragment : DialogFragment(), KoinComponent {
     private fun setObserve() {
         binding.lifecycleOwner = this
 
-        pokemonDetailViewModel.pokemon.observe(this, {
-            Log.e("pokemon fragment", "$it")
-            binding.pokemon = it
-        })
-
-        pokemonDetailViewModel.finishEvent.observe(this, {
-            Toast.makeText(requireContext(), "pokemon is null", Toast.LENGTH_SHORT).show()
-            dismiss()
-        })
-
         pokemonDetailViewModel.toastEvent.observe(this, {
             Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
         })
 
         pokemonDetailViewModel.moveToMapsEvent.observe(this, {
             val intent = Intent(requireContext(), MapsActivity::class.java)
-            intent.putExtra("pokemon", it)
+            intent.putExtra("pokemonLocationList", it)
             startActivity(intent)
+        })
+
+        pokemonDetailViewModel.pokemonDetailLiveData.observe(this, {
+            binding.pokemonDetail = it
         })
     }
 

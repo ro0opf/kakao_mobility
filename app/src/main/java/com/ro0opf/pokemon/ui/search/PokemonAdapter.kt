@@ -1,6 +1,7 @@
 package com.ro0opf.pokemon.ui.search
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
@@ -8,23 +9,23 @@ import android.widget.Filterable
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.ro0opf.pokemon.data.pokemon.Pokemon
+import com.ro0opf.pokemon.data.pokemon.PokemonIdAndNames
 import com.ro0opf.pokemon.databinding.ItemPokemonBinding
 import com.ro0opf.pokemon.ui.pokemondetail.PokemonDetailDialogFragment
 import java.util.*
 import kotlin.collections.ArrayList
 
-class PokemonAdapter() :
-    ListAdapter<Pokemon, PokemonAdapter.ViewHolder>(object : DiffUtil.ItemCallback<Pokemon>() {
-        override fun areItemsTheSame(oldItem: Pokemon, newItem: Pokemon):
+class PokemonAdapter :
+    ListAdapter<PokemonIdAndNames, PokemonAdapter.ViewHolder>(object : DiffUtil.ItemCallback<PokemonIdAndNames>() {
+        override fun areItemsTheSame(oldItem: PokemonIdAndNames, newItem: PokemonIdAndNames):
                 Boolean = oldItem == newItem
 
-        override fun areContentsTheSame(oldItem: Pokemon, newItem: Pokemon):
+        override fun areContentsTheSame(oldItem: PokemonIdAndNames, newItem: PokemonIdAndNames):
                 Boolean = oldItem == newItem
     }), Filterable {
 
-    var pokemonList = ArrayList<Pokemon>()
-    private var filterList: List<Pokemon> = pokemonList
+    var pokemonIdAndNamesList = ArrayList<PokemonIdAndNames>()
+    private var filterList: List<PokemonIdAndNames> = pokemonIdAndNamesList
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding: ItemPokemonBinding =
@@ -41,14 +42,14 @@ class PokemonAdapter() :
             override fun performFiltering(charSequence: CharSequence): FilterResults {
                 val charString = charSequence.toString()
                 filterList = if (charString.isEmpty()) {
-                    pokemonList
+                    pokemonIdAndNamesList
                 } else {
-                    val filteredList = ArrayList<Pokemon>()
-                    for (pokemon in pokemonList) {
-                        if (pokemon.names[0].toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT))
-                            || pokemon.names[1].toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT))
+                    val filteredList = ArrayList<PokemonIdAndNames>()
+                    for (pokemonIdAndNames in pokemonIdAndNamesList) {
+                        if (pokemonIdAndNames.names[0].toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT))
+                            || pokemonIdAndNames.names[1].toLowerCase(Locale.ROOT).contains(charString.toLowerCase(Locale.ROOT))
                         ) {
-                            filteredList.add(pokemon)
+                            filteredList.add(pokemonIdAndNames)
                         }
                     }
                     filteredList
@@ -59,7 +60,7 @@ class PokemonAdapter() :
             }
 
             override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
-                filterList = filterResults.values as List<Pokemon>
+                filterList = filterResults.values as List<PokemonIdAndNames>
                 submitList(filterList)
             }
         }
@@ -68,12 +69,12 @@ class PokemonAdapter() :
     inner class ViewHolder(private val binding: ItemPokemonBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(pokemon: Pokemon) {
-            binding.pokemon = pokemon
+        fun bindTo(pokemonIdAndNames: PokemonIdAndNames) {
+            binding.pokemonIdAndNames = pokemonIdAndNames
             binding.clPokemon.setOnClickListener {
                 val dialog = PokemonDetailDialogFragment()
                 val args = Bundle()
-                args.putParcelable("pokemon", pokemon);
+                args.putParcelable("pokemonIdAndNames", pokemonIdAndNames);
                 dialog.arguments = args;
 
                 dialog.show((binding.root.context as SearchActivity).supportFragmentManager, "pokemonDetailDialogFragment")

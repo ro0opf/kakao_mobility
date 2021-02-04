@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="pokemon"
-            type="com.ro0opf.pokemon.data.pokemon.Pokemon" />
+            name="pokemonDetail"
+            type="com.ro0opf.pokemon.data.pokemon.PokemonDetail" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@{pokemon.names[0] + `(` + pokemon.names[1] + `)`}"
+            android:text="@{pokemonDetail.names[0] + `(` + pokemonDetail.names[1] + `)`}"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -31,7 +31,7 @@
 
         <ImageView
             android:id="@+id/iv_img"
-            setImageCenterSrc="@{pokemon.imgSrc}"
+            setImageCenterSrc="@{pokemonDetail.imgSrc}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
@@ -55,8 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:padding="16dp"
+            android:text="@{`키 : ` + pokemonDetail.height}"
             android:textColor="@color/sub_color"
-            android:text="@{`키 : ` + pokemon.height}"
             app:layout_constraintBottom_toTopOf="@id/tv_weight"
             app:layout_constraintEnd_toEndOf="@id/glv_500"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,8 +68,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
+            android:text="@{`몸무게 : ` + pokemonDetail.weight}"
             android:textColor="@color/sub_color"
-            android:text="@{`몸무게 : ` + pokemon.weight}"
             app:layout_constraintBottom_toTopOf="@id/btn_done"
             app:layout_constraintEnd_toEndOf="@id/glv_500"
             app:layout_constraintStart_toStartOf="parent"
@@ -80,10 +80,10 @@
             android:id="@+id/btn_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/tv_weight"
-            app:layout_constraintEnd_toEndOf="parent"
             android:text="@string/show_location"
             android:textColor="@color/sub_color"
+            app:layout_constraintBottom_toBottomOf="@id/tv_weight"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/glv_500"
             app:layout_constraintTop_toTopOf="@id/tv_height"
             tools:text="서식지 보기" />

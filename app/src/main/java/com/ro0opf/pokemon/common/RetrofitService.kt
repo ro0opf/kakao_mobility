@@ -20,7 +20,7 @@ object RetrofitService {
 
     private val retrofitPokemonOfficial =
         Retrofit.Builder()
-            .baseUrl(" https://pokeapi.co/")
+            .baseUrl("https://pokeapi.co/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 }

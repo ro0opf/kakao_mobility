@@ -1,6 +1,7 @@
 package com.ro0opf.pokemon.ui.search
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
@@ -28,8 +29,9 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setObserve() {
         binding.lifecycleOwner = this
-        searchViewModel.pokemonList.observe(this, {
-            pokemonAdapter.pokemonList.addAll(it)
+
+        searchViewModel.pokemonIdAndNamesList.observe(this, {
+            pokemonAdapter.pokemonIdAndNamesList.addAll(it)
             pokemonAdapter.submitList(it)
         })
     }
