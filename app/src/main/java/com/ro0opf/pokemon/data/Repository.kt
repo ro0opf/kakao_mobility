@@ -1,36 +1,35 @@
 package com.ro0opf.pokemon.data
 
-import com.ro0opf.pokemon.common.RetrofitService
+import android.util.Log
 import com.ro0opf.pokemon.data.pokemon.*
 
 class Repository(
     private val localPokemonDataSource: LocalPokemonDataSource,
     private val remotePokemonDataSource: RemotePokemonDataSource
 ) {
-    private val pokemonClient = RetrofitService.createService(PokemonAPI::class.java)
-    private val pokemonOfficialClient =
-        RetrofitService.createPokemonOfficialService(PokemonOfficialAPI::class.java)
-    private val pokemonDetailMap = HashMap<Int, PokemonDetail>()
-    private var pokemonLocationDTOs: PokemonLocationDTOs? = null
 
-    suspend fun fetchPokemonList() = pokemonClient.fetchPokemonList()
 
-    suspend fun fetchPokemonLocationList(): PokemonLocationDTOs? {
-        val pokemonLocationList = localPokemonDataSource.fetchPokemonLocationList()
-        if (pokemonLocationList != null){
-            return pokemonLocationList
-        } else{
-            val resPokemonLocationList = remotePokemonDataSource.fetchPokemonLocationList()
+    suspend fun fetchPokemonList(): List<PokemonIdAndNames> =
+        remotePokemonDataSource.fetchPokemonList().pokemons.map { it.convert() }
+
+    suspend fun fetchPokemonLocationList(): List<PokemonLocation> {
+        var pokemonLocationListDto = localPokemonDataSource.fetchPokemonLocationList()
+
+        if (pokemonLocationListDto == null) {
+            pokemonLocationListDto = remotePokemonDataSource.fetchPokemonLocationList()
+            localPokemonDataSource.pokemonLocationListDto = pokemonLocationListDto
         }
+        return pokemonLocationListDto.pokemons.map { it.convert() }
     }
 
-    suspend fun fetchPokemonDetail(id: Int): PokemonDetail? {
-        if (!pokemonDetailMap.containsKey(id)) {
-            val resPokemonDetail = pokemonOfficialClient.fetchPokemonDetail((id)).body()
-            if (resPokemonDetail != null) {
-                pokemonDetailMap.put(id, resPokemonDetail)
-            }
+    suspend fun fetchPokemonDetail(id: Int): PokemonDetail {
+        var pokemonDetailDto = localPokemonDataSource.fetchPokemonDetail(id)
+
+        if (pokemonDetailDto == null) {
+            pokemonDetailDto = remotePokemonDataSource.fetchPokemonDetail(id)
+            localPokemonDataSource.pokemonDetailMap[id] = pokemonDetailDto
         }
-        return pokemonDetailMap[id]
+
+        return pokemonDetailDto.convert()
     }
 }

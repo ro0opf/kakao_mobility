@@ -6,10 +6,10 @@ import kotlinx.parcelize.RawValue
 
 @Parcelize
 data class PokemonDetail(
-    val id: Int,
-    val names: List<String>,
-    val height: Int,
-    val weight: Int,
+    val id: Int?,
+    val names: List<String>?,
+    val height: Int?,
+    val weight: Int?,
     val sprites: @RawValue Map<String, Any?>,
     val imgSrc: String?
 ) : Parcelable
@@ -34,13 +34,19 @@ data class PokemonLocationList(
     val names: List<String>
 ) : Parcelable
 
-fun PokemonLocationDTO.convert(): PokemonLocation {
+fun PokemonDetailDto.convert() : PokemonDetail {
+    return PokemonDetail(
+        id, names, height, weight, sprites, imgSrc
+    )
+}
+
+fun PokemonLocationDto.convert(): PokemonLocation {
     return PokemonLocation(
         lat, lng, id
     )
 }
 
-fun PokemonIdAndNamesDTO.convert(): PokemonIdAndNames {
+fun PokemonIdAndNamesDto.convert(): PokemonIdAndNames {
     return PokemonIdAndNames(
         id, names
     )

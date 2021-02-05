@@ -10,7 +10,6 @@ import com.ro0opf.pokemon.data.Repository
 import com.ro0opf.pokemon.data.pokemon.PokemonDetail
 import com.ro0opf.pokemon.data.pokemon.PokemonIdAndNames
 import com.ro0opf.pokemon.data.pokemon.PokemonLocationList
-import com.ro0opf.pokemon.data.pokemon.convert
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -74,9 +73,7 @@ class PokemonDetailViewModel(
                 }
 
                 val response = repository.fetchPokemonLocationList()
-                val locations = response?.pokemons ?: return@async null
-                val idLocations = locations.filter { it.id == pokemonIdAndNames.id }
-                    .map { it.convert() }
+                val idLocations = response.filter { it.id == pokemonIdAndNames.id }
 
                 if (idLocations.isNotEmpty()) {
                     return@async PokemonLocationList(

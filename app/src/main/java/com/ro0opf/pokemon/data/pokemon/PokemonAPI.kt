@@ -5,8 +5,8 @@ import retrofit2.http.GET
 
 interface PokemonAPI {
     @GET("/pokemon_name")
-    suspend fun fetchPokemonList(): Response<PokemonIdAndNamesDTOs>
+    suspend fun fetchPokemonList(): Response<PokemonIdAndNamesListDto>
 
     @GET("/pokemon_locations")
-    suspend fun fetchPokemonLocationList(): Response<PokemonLocationDTOs>
+    suspend fun fetchPokemonLocationList(): Response<PokemonLocationListDto>
 }
