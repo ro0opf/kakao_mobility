@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-object RetrofitService {
+class RetrofitService {
     fun <T> createService(serviceClass: Class<T>): T {
         return retrofit.create(serviceClass)
     }

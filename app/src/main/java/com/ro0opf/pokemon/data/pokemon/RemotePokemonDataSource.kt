@@ -1,11 +1,10 @@
 package com.ro0opf.pokemon.data.pokemon
 
-import com.ro0opf.pokemon.common.RetrofitService
-
-class RemotePokemonDataSource : PokemonDataSource {
-    private val pokemonClient = RetrofitService.createService(PokemonAPI::class.java)
-    private val pokemonOfficialClient =
-        RetrofitService.createPokemonOfficialService(PokemonOfficialAPI::class.java)
+class RemotePokemonDataSource
+    (
+    private val pokemonClient: PokemonAPI,
+    private val pokemonOfficialClient: PokemonOfficialAPI
+) : PokemonDataSource {
 
     override suspend fun fetchPokemonList(): PokemonIdAndNamesListDto {
         return pokemonClient.fetchPokemonList().body()!!
