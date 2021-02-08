@@ -26,7 +26,7 @@ class Repository(
 
         if (pokemonDetailDto == null) {
             pokemonDetailDto = remotePokemonData.fetchPokemonDetail(id)
-            localPokemonData.pokemonDetailMap[id] = pokemonDetailDto
+            localPokemonData.setPokemonDetailMap(id, pokemonDetailDto)
         }
 
         return pokemonDetailDto.convert()
