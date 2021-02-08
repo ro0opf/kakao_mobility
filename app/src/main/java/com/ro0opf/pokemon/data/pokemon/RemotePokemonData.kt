@@ -7,14 +7,14 @@ class RemotePokemonData
 ) : RemotePokemonDataSource {
 
     override suspend fun fetchPokemonList(): PokemonIdAndNamesListDto {
-        return pokemonClient.fetchPokemonList().body()!!
+        return pokemonClient.fetchPokemonList()
     }
 
     override suspend fun fetchPokemonLocationList(): PokemonLocationListDto {
-        return pokemonClient.fetchPokemonLocationList().body()!!
+        return pokemonClient.fetchPokemonLocationList()
     }
 
     override suspend fun fetchPokemonDetail(id: Int): PokemonDetailDto {
-        return pokemonOfficialClient.fetchPokemonDetail(id).body()!!
+        return pokemonOfficialClient.fetchPokemonDetail(id)
     }
 }

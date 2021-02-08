@@ -44,8 +44,7 @@ class PokemonDetailViewModel(
                     return@async null
                 }
 
-                val response = repository.fetchPokemonDetail(pokemonIdAndNames.id)
-                val pokemonDetail = response
+                val pokemonDetail = repository.fetchPokemonDetail(pokemonIdAndNames.id)
 
                 val imgSrc = if (pokemonDetail.sprites["front_default"] != null) {
                     pokemonDetail.sprites["front_default"].toString()

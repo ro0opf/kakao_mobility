@@ -1,12 +1,11 @@
 package com.ro0opf.pokemon.data.pokemon
 
-import retrofit2.Response
 import retrofit2.http.GET
 
 interface PokemonAPI {
     @GET("/pokemon_name")
-    suspend fun fetchPokemonList(): Response<PokemonIdAndNamesListDto>
+    suspend fun fetchPokemonList(): PokemonIdAndNamesListDto
 
     @GET("/pokemon_locations")
-    suspend fun fetchPokemonLocationList(): Response<PokemonLocationListDto>
+    suspend fun fetchPokemonLocationList(): PokemonLocationListDto
 }
