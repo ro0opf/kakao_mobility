@@ -2,10 +2,7 @@ package com.ro0opf.pokemon.di
 
 import com.ro0opf.pokemon.common.RetrofitService
 import com.ro0opf.pokemon.data.Repository
-import com.ro0opf.pokemon.data.pokemon.LocalPokemonDataSource
-import com.ro0opf.pokemon.data.pokemon.PokemonAPI
-import com.ro0opf.pokemon.data.pokemon.PokemonOfficialAPI
-import com.ro0opf.pokemon.data.pokemon.RemotePokemonDataSource
+import com.ro0opf.pokemon.data.pokemon.*
 import org.koin.dsl.module
 
 
@@ -15,11 +12,11 @@ val commonModule = module {
     }
 
     single {
-        LocalPokemonDataSource()
+        LocalPokemonData()
     }
 
     single {
-        RemotePokemonDataSource(get(), get())
+        RemotePokemonData(get(), get())
     }
 
     single {
