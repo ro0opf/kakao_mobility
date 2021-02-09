@@ -12,6 +12,7 @@ import com.ro0opf.pokemon.R
 import com.ro0opf.pokemon.databinding.ActivitySearchBinding
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.math.log
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
@@ -21,7 +22,6 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search)
-        searchViewModel.fetchPokemonList()
         setAddTextChangedListener()
         setRcvSearchResult(binding.rcvSearchResult)
         setObserve()

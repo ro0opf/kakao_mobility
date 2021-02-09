@@ -2,6 +2,7 @@ package com.ro0opf.pokemon.ui.pokemondetail
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,8 +39,6 @@ class PokemonDetailDialogFragment : DialogFragment(), KoinComponent {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.dialog_pokemon_detail, container, false)
 
-        pokemonDetailViewModel.fetchPokemonInfo()
-
         setObserve()
         setOnClickListener()
         return binding.root
@@ -70,6 +69,10 @@ class PokemonDetailDialogFragment : DialogFragment(), KoinComponent {
 
         pokemonDetailViewModel.pokemonDetailLiveData.observe(this, {
             binding.pokemonDetail = it
+        })
+
+        pokemonDetailViewModel.pokemonLocationListLiveData.observe(this, {
+
         })
     }
 
