@@ -5,9 +5,15 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="pokemonDetail"
             type="com.ro0opf.pokemon.data.pokemon.PokemonDetail" />
+
+        <variable
+            name="isProgressBarVisible"
+            type="androidx.lifecycle.LiveData&lt;Boolean&gt;" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -81,6 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/show_location"
+            android:enabled="@{!isProgressBarVisible}"
             android:textColor="@color/sub_color"
             app:layout_constraintBottom_toBottomOf="@id/tv_weight"
             app:layout_constraintEnd_toEndOf="parent"
@@ -105,6 +112,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_weight" />
 
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

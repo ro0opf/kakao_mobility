@@ -39,6 +39,7 @@ class PokemonDetailDialogFragment : DialogFragment(), KoinComponent {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.dialog_pokemon_detail, container, false)
 
+        binding.isProgressBarVisible = pokemonDetailViewModel.isProgressBarVisible
         setObserve()
         setOnClickListener()
         return binding.root
@@ -71,9 +72,7 @@ class PokemonDetailDialogFragment : DialogFragment(), KoinComponent {
             binding.pokemonDetail = it
         })
 
-        pokemonDetailViewModel.pokemonLocationListLiveData.observe(this, {
 
-        })
     }
 
 

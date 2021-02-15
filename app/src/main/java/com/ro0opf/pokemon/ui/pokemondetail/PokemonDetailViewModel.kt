@@ -1,13 +1,15 @@
 package com.ro0opf.pokemon.ui.pokemondetail
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
 import com.hadilq.liveevent.LiveEvent
 import com.ro0opf.pokemon.data.Repository
 import com.ro0opf.pokemon.data.pokemon.PokemonDetail
 import com.ro0opf.pokemon.data.pokemon.PokemonIdAndNames
 import com.ro0opf.pokemon.data.pokemon.PokemonLocationList
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class PokemonDetailViewModel(
     private val pokemonIdAndNames: PokemonIdAndNames,
@@ -17,20 +19,8 @@ class PokemonDetailViewModel(
     val toastEvent = LiveEvent<String>()
     val moveToMapsEvent = LiveEvent<PokemonLocationList>()
 
-    val pokemonLocationListLiveData = liveData(Dispatchers.IO) {
-        val response = repository.fetchPokemonLocationList()
-        val idLocations = response.filter { it.id == pokemonIdAndNames.id }
-
-        if (idLocations.isNotEmpty()) {
-            emit(
-                PokemonLocationList(
-                    pokemonIdAndNames.id,
-                    idLocations,
-                    pokemonIdAndNames.names
-                )
-            )
-        }
-    }
+    private val _isProgressBarVisible = MutableLiveData<Boolean>(false)
+    val isProgressBarVisible: LiveData<Boolean> = _isProgressBarVisible
 
     val pokemonDetailLiveData = liveData(Dispatchers.IO) {
         val pokemonDetail = repository.fetchPokemonDetail(pokemonIdAndNames.id)
@@ -53,14 +43,28 @@ class PokemonDetailViewModel(
             )
         )
     }
+    var job: Job? = null
 
     fun onLocationButtonClick() {
-        val pokemonLocationList = pokemonLocationListLiveData.value
+        job?.cancel()
 
-        if (pokemonLocationList?.locations.isNullOrEmpty()) {
-            toastEvent.value = "서식지가 알려져있지 않습니다."
-        } else {
-            moveToMapsEvent.value = pokemonLocationList
+        job = viewModelScope.launch {
+            _isProgressBarVisible.value = true
+            val response = repository.fetchPokemonLocationList()
+            val idLocations = response.filter { it.id == pokemonIdAndNames.id }
+            _isProgressBarVisible.value = false
+
+            if (isActive) {
+                if (idLocations.isNotEmpty()) {
+                    moveToMapsEvent.value = PokemonLocationList(
+                        pokemonIdAndNames.id,
+                        idLocations,
+                        pokemonIdAndNames.names
+                    )
+                } else {
+                    toastEvent.value = "서식지가 알려져있지 않습니다."
+                }
+            }
         }
     }
 }
