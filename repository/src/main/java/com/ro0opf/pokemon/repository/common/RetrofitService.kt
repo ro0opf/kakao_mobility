@@ -1,4 +1,4 @@
-package com.ro0opf.pokemon.common
+package com.ro0opf.pokemon.repository.common
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

@@ -9,7 +9,7 @@
 
         <variable
             name="pokemonDetail"
-            type="com.ro0opf.pokemon.data.pokemon.PokemonDetail" />
+            type="com.ro0opf.pokemon.repository.pokemon.PokemonDetail" />
 
         <variable
             name="isProgressBarVisible"

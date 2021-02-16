@@ -1,4 +1,4 @@
-package com.ro0opf.pokemon.data.pokemon
+package com.ro0opf.pokemon.repository.pokemon
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -34,7 +34,7 @@ data class PokemonLocationList(
     val names: List<String>
 ) : Parcelable
 
-fun PokemonDetailDto.convert() : PokemonDetail {
+fun PokemonDetailDto.convert(): PokemonDetail {
     return PokemonDetail(
         id, names, height, weight, sprites, imgSrc
     )

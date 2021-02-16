@@ -1,4 +1,6 @@
-package com.ro0opf.pokemon.data.pokemon
+package com.ro0opf.pokemon.repository.pokemon
+
+import com.ro0opf.pokemon.repository.Result
 
 class RemotePokemonData
     (
@@ -14,7 +16,11 @@ class RemotePokemonData
         return pokemonClient.fetchPokemonLocationList()
     }
 
-    override suspend fun fetchPokemonDetail(id: Int): PokemonDetailDto {
-        return pokemonOfficialClient.fetchPokemonDetail(id)
+    override suspend fun fetchPokemonDetail(id: Int): Result<PokemonDetailDto> {
+        return try {
+            Result.Success(pokemonOfficialClient.fetchPokemonDetail(id))
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
     }
 }

@@ -2,7 +2,6 @@ package com.ro0opf.pokemon.ui.pokemondetail
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,6 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import com.ro0opf.pokemon.R
-import com.ro0opf.pokemon.data.pokemon.PokemonIdAndNames
 import com.ro0opf.pokemon.databinding.DialogPokemonDetailBinding
 import com.ro0opf.pokemon.ui.maps.MapsActivity
 import org.koin.core.component.KoinComponent
@@ -26,7 +24,8 @@ class PokemonDetailDialogFragment : DialogFragment(), KoinComponent {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val pokemonIdAndNames = arguments?.getParcelable<PokemonIdAndNames>("pokemonIdAndNames")
+        val pokemonIdAndNames =
+            arguments?.getParcelable<com.ro0opf.pokemon.repository.pokemon.PokemonIdAndNames>("pokemonIdAndNames")
 
         if (pokemonIdAndNames == null) {
             Toast.makeText(requireContext(), "pokemon is null", Toast.LENGTH_SHORT).show()
@@ -59,7 +58,7 @@ class PokemonDetailDialogFragment : DialogFragment(), KoinComponent {
         binding.lifecycleOwner = this
 
         pokemonDetailViewModel.toastEvent.observe(this, {
-            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "$it", Toast.LENGTH_SHORT).show()
         })
 
         pokemonDetailViewModel.moveToMapsEvent.observe(this, {
@@ -68,11 +67,13 @@ class PokemonDetailDialogFragment : DialogFragment(), KoinComponent {
             startActivity(intent)
         })
 
+        pokemonDetailViewModel.closeEvent.observe(this, {
+            dismiss()
+        })
+
         pokemonDetailViewModel.pokemonDetailLiveData.observe(this, {
             binding.pokemonDetail = it
         })
-
-
     }
 
 

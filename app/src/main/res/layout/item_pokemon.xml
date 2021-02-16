@@ -7,7 +7,7 @@
 
         <variable
             name="pokemonIdAndNames"
-            type="com.ro0opf.pokemon.data.pokemon.PokemonIdAndNames" />
+            type="com.ro0opf.pokemon.repository.pokemon.PokemonIdAndNames" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

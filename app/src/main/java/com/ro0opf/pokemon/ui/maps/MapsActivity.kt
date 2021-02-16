@@ -10,7 +10,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.ro0opf.pokemon.R
-import com.ro0opf.pokemon.data.pokemon.PokemonLocationList
+import com.ro0opf.pokemon.repository.pokemon.PokemonLocationList
 import com.ro0opf.pokemon.ui.pokemondetail.PokemonDetailViewModel
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -28,7 +28,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         val pokemonLocationList =
-            intent.getParcelableExtra<PokemonLocationList>("pokemonLocationList")!!
+            intent.getParcelableExtra<com.ro0opf.pokemon.repository.pokemon.PokemonLocationList>("pokemonLocationList")!!
 
         val locationList = pokemonLocationList.locations
         val firstZoom = LatLng(locationList[0].lat, locationList[0].lng)

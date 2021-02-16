@@ -1,4 +1,4 @@
-package com.ro0opf.pokemon.data.pokemon
+package com.ro0opf.pokemon.repository.pokemon
 
 class LocalPokemonData : LocalPokemonDataSource {
     var pokemonLocationListDto : PokemonLocationListDto? = null

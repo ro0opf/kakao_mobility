@@ -1,6 +1,7 @@
-package com.ro0opf.pokemon.data
+package com.ro0opf.pokemon.repository
 
-import com.ro0opf.pokemon.data.pokemon.*
+import android.util.Log
+import com.ro0opf.pokemon.repository.pokemon.*
 
 class Repository(
     private val localPokemonData: LocalPokemonData,
@@ -21,14 +22,23 @@ class Repository(
         return pokemonLocationListDto.pokemons.map { it.convert() }
     }
 
-    suspend fun fetchPokemonDetail(id: Int): PokemonDetail {
+    suspend fun fetchPokemonDetail(id: Int): Result<PokemonDetail> {
         var pokemonDetailDto = localPokemonData.fetchPokemonDetail(id)
 
-        if (pokemonDetailDto == null) {
-            pokemonDetailDto = remotePokemonData.fetchPokemonDetail(id)
-            localPokemonData.setPokemonDetailMap(id, pokemonDetailDto)
+        return if (pokemonDetailDto != null) {
+            Result.Success(pokemonDetailDto.convert())
+        } else {
+            when (val result = remotePokemonData.fetchPokemonDetail(id)) {
+                is Result.Success -> {
+                    pokemonDetailDto = result.data
+                    localPokemonData.setPokemonDetailMap(id, pokemonDetailDto)
+                    Result.Success(pokemonDetailDto.convert())
+                }
+                is Result.Error -> {
+                    Result.Error(result.exception)
+                }
+                is Result.Loading -> Result.Loading
+            }
         }
-
-        return pokemonDetailDto.convert()
     }
 }

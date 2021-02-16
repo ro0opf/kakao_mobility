@@ -1,30 +1,28 @@
 package com.ro0opf.pokemon.di
 
-import com.ro0opf.pokemon.common.RetrofitService
-import com.ro0opf.pokemon.data.Repository
-import com.ro0opf.pokemon.data.pokemon.*
+import com.ro0opf.pokemon.repository.common.RetrofitService
 import org.koin.dsl.module
 
 
 val commonModule = module {
     single {
-        Repository(get(), get())
+        com.ro0opf.pokemon.repository.Repository(get(), get())
     }
 
     single {
-        LocalPokemonData()
+        com.ro0opf.pokemon.repository.pokemon.LocalPokemonData()
     }
 
     single {
-        RemotePokemonData(get(), get())
+        com.ro0opf.pokemon.repository.pokemon.RemotePokemonData(get(), get())
     }
 
     single {
-        get<RetrofitService>().createService(PokemonAPI::class.java)
+        get<RetrofitService>().createService(com.ro0opf.pokemon.repository.pokemon.PokemonAPI::class.java)
     }
 
     single {
-        get<RetrofitService>().createPokemonOfficialService(PokemonOfficialAPI::class.java)
+        get<RetrofitService>().createPokemonOfficialService(com.ro0opf.pokemon.repository.pokemon.PokemonOfficialAPI::class.java)
     }
 
     single {
