@@ -6,16 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import coil.load
 import com.ro0opf.pokemon.R
 import com.ro0opf.pokemon.databinding.DialogPokemonDetailBinding
+import com.ro0opf.pokemon.di.PokemonKoinComponent
+import com.ro0opf.pokemon.repository.pokemon.PokemonIdAndNames
 import com.ro0opf.pokemon.ui.maps.MapsActivity
-import org.koin.core.component.KoinComponent
+import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 
-class PokemonDetailDialogFragment : DialogFragment(), KoinComponent {
+@KoinApiExtension
+class PokemonDetailDialogFragment : DialogFragment(), PokemonKoinComponent {
     private lateinit var binding: DialogPokemonDetailBinding
     private lateinit var pokemonDetailViewModel: PokemonDetailViewModel
 
@@ -25,7 +28,7 @@ class PokemonDetailDialogFragment : DialogFragment(), KoinComponent {
         savedInstanceState: Bundle?
     ): View? {
         val pokemonIdAndNames =
-            arguments?.getParcelable<com.ro0opf.pokemon.repository.pokemon.PokemonIdAndNames>("pokemonIdAndNames")
+            arguments?.getParcelable<PokemonIdAndNames>("pokemonIdAndNames")
 
         if (pokemonIdAndNames == null) {
             Toast.makeText(requireContext(), "pokemon is null", Toast.LENGTH_SHORT).show()
@@ -35,10 +38,13 @@ class PokemonDetailDialogFragment : DialogFragment(), KoinComponent {
 
         pokemonDetailViewModel = get { parametersOf(pokemonIdAndNames) }
         dialog!!.window?.setBackgroundDrawableResource(R.drawable.round_corner)
-        binding =
-            DataBindingUtil.inflate(inflater, R.layout.dialog_pokemon_detail, container, false)
+        binding = DialogPokemonDetailBinding.inflate(
+            inflater,
+            container,
+            false
+        )
 
-        binding.isProgressBarVisible = pokemonDetailViewModel.isProgressBarVisible
+//        binding.isProgressBarVisible = pokemonDetailViewModel.isProgressBarVisible
         setObserve()
         setOnClickListener()
         return binding.root
@@ -55,8 +61,6 @@ class PokemonDetailDialogFragment : DialogFragment(), KoinComponent {
     }
 
     private fun setObserve() {
-        binding.lifecycleOwner = this
-
         pokemonDetailViewModel.toastEvent.observe(this, {
             Toast.makeText(requireContext(), "$it", Toast.LENGTH_SHORT).show()
         })
@@ -72,7 +76,16 @@ class PokemonDetailDialogFragment : DialogFragment(), KoinComponent {
         })
 
         pokemonDetailViewModel.pokemonDetailLiveData.observe(this, {
-            binding.pokemonDetail = it
+            it.names?.let { names ->
+                binding.tvName.text = "${names[0]} (${names[1]})"
+            }
+            it.weight?.let { weight ->
+                binding.tvWeight.text = "몸무게 : $weight"
+            }
+            it.height?.let { height ->
+                binding.tvHeight.text = "키 : $height"
+            }
+            binding.ivImg.load(it.imgSrc)
         })
     }
 

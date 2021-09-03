@@ -1,8 +1,6 @@
 package com.ro0opf.pokemon.ui.maps
 
 import android.os.Bundle
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -10,16 +8,17 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.ro0opf.pokemon.R
-import com.ro0opf.pokemon.repository.pokemon.PokemonLocationList
-import com.ro0opf.pokemon.ui.pokemondetail.PokemonDetailViewModel
+import com.ro0opf.pokemon.common.base.BaseActivity
+import org.koin.core.component.KoinApiExtension
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+@KoinApiExtension
+class MapsActivity : BaseActivity(R.layout.activity_maps), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_maps)
+
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
